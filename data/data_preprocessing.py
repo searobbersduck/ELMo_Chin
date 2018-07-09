@@ -209,9 +209,41 @@ def test_gen_seg_files():
     inpattern = './example/*_origin.txt'
     gen_seg_files(inpattern)
 
+def gen_vocab_for_elmo(indir):
+    vocab_chars_infile = os.path.join(indir, 'vocab_raw.txt')
+    vocab_words_infile = os.path.join(indir, 'vocab_seg_words.txt')
+    vocab_chars_outfile = os.path.join(indir, 'vocab_seg_chars_elmo.txt')
+    vocab_words_outfile = os.path.join(indir, 'vocab_seg_words_elmo.txt')
+    with open(vocab_chars_infile, 'r', encoding='utf-8') as fin:
+        with open(vocab_chars_outfile, 'w', encoding='utf-8') as fout:
+            for line in fin.readlines():
+                line = line.strip()
+                if line is None or len(line) == 0:
+                    continue
+                ss = line.split()
+                if len(ss) != 2:
+                    continue
+                fout.write(ss[0])
+                fout.write('\n')
+    with open(vocab_words_infile, 'r', encoding='utf-8') as fin:
+        with open(vocab_words_outfile, 'w', encoding='utf-8') as fout:
+            for line in fin.readlines():
+                line = line.strip()
+                if line is None or len(line) == 0:
+                    continue
+                ss = line.split()
+                if len(ss) != 2:
+                    continue
+                fout.write(ss[0])
+                fout.write('\n')
+
+def test_gen_vocab_for_elmo():
+    indir = './'
+    gen_vocab_for_elmo(indir)
 
 if __name__ == '__main__':
     # test_outVocab()
     # test_gen_raw_txts()
     # test_get_vocab_from_dir()
-    test_gen_seg_files()
+    # test_gen_seg_files()
+    test_gen_vocab_for_elmo()
