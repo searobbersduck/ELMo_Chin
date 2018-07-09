@@ -105,3 +105,4 @@ venv.bak/
 
 .idea
 data/example
+!data/example/30?.txt
