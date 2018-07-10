@@ -181,12 +181,17 @@ def gen_seg_files(inpattern):
                     line_chars += line[i]
                     line_chars += ' '
                 ss = jieba.cut(line, False, True)
+                ss_new = []
                 for s in ss:
+                    if len(s) > 9:
+                        print(s)
+                        continue
+                    ss_new.append(s)
                     if s in vocab_words:
                         vocab_words[s] += 1
                     else:
                         vocab_words[s] = 1
-                line_words = ' '.join(ss)
+                line_words = ' '.join(ss_new)
                 list_lines_chars.append(line_chars)
                 list_lines_words.append(line_words)
         with open(outfile_chars, 'w', encoding='utf-8') as f:
@@ -214,6 +219,8 @@ def gen_vocab_for_elmo(indir):
     vocab_words_infile = os.path.join(indir, 'vocab_seg_words.txt')
     vocab_chars_outfile = os.path.join(indir, 'vocab_seg_chars_elmo.txt')
     vocab_words_outfile = os.path.join(indir, 'vocab_seg_words_elmo.txt')
+    set_chars = set(['<S>', '</S>', '<UNK>'])
+    set_words = set(['<S>', '</S>', '<UNK>'])
     with open(vocab_chars_infile, 'r', encoding='utf-8') as fin:
         with open(vocab_chars_outfile, 'w', encoding='utf-8') as fout:
             for line in fin.readlines():
@@ -223,6 +230,7 @@ def gen_vocab_for_elmo(indir):
                 ss = line.split()
                 if len(ss) != 2:
                     continue
+                set_chars.add(ss[0])
                 fout.write(ss[0])
                 fout.write('\n')
     with open(vocab_words_infile, 'r', encoding='utf-8') as fin:
@@ -234,12 +242,39 @@ def gen_vocab_for_elmo(indir):
                 ss = line.split()
                 if len(ss) != 2:
                     continue
+                set_words.add(ss[0])
                 fout.write(ss[0])
                 fout.write('\n')
+    with open(vocab_chars_outfile, 'w', encoding='utf-8') as fout:
+        fout.write('\n'.join(set_chars))
+    with open(vocab_words_outfile, 'w', encoding='utf-8') as fout:
+        fout.write('\n'.join(set_words))
 
 def test_gen_vocab_for_elmo():
     indir = './'
     gen_vocab_for_elmo(indir)
+
+#统计所有分词中包含的字的最大个数：
+def stat_max_length_in_words(infile):
+    with open(infile, 'r', encoding='utf-8') as f:
+        max_length = 0
+        list = []
+        for line in f.readlines():
+            line = line.strip()
+            if line is None or len(line) == 0:
+                continue
+            if max_length < len(line):
+                max_length = len(line)
+            if len(line) > 5:
+                list.append(line)
+    print('max length in words is: {}'.format(max_length))
+    outfile = './words_freq_stat.txt'
+    with open(outfile, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(list))
+
+def test_stat_max_length_in_words():
+    infile = '../data/vocab_seg_words_elmo.txt'
+    stat_max_length_in_words(infile)
 
 if __name__ == '__main__':
     # test_outVocab()
@@ -247,3 +282,4 @@ if __name__ == '__main__':
     # test_get_vocab_from_dir()
     # test_gen_seg_files()
     test_gen_vocab_for_elmo()
+    test_stat_max_length_in_words()
