@@ -376,7 +376,7 @@ class LMDataset(object):
             list of (id, char_id) tuples.
         """
         print('Loading data from: %s' % shard_name)
-        with open(shard_name) as f:
+        with open(shard_name, 'r', encoding='utf-8') as f:
             sentences_raw = f.readlines()
 
         if self._reverse:

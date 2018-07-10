@@ -1,4 +1,4 @@
-from bilm.data import Vocabulary, UnicodeCharsVocabulary
+from bilm.data import Vocabulary, UnicodeCharsVocabulary, LMDataset, BidirectionalLMDataset
 
 '''
 UE for Vocabulary class
@@ -93,5 +93,24 @@ print('====> decode \t{}\t to words: {}'.format(ids, vocab_unicodechars.decode(i
 
 
 '''
-UE for Batcher
+UE for LMDataset
 '''
+print('\n\n\tUE for LMDataset:')
+vocab_file = '../data/vocab_seg_words_elmo.txt'
+vocab_unicodechars = UnicodeCharsVocabulary(vocab_file, max_word_length=10, validate_file=True)
+filepattern = '../data/example/*_seg_words.txt'
+lmds = LMDataset(filepattern, vocab_unicodechars, test=True)
+batch_size = 128
+n_gpus = 1
+unroll_steps = 10
+data_gen = lmds.iter_batches(batch_size * n_gpus, unroll_steps)
+for num, batch in enumerate(data_gen, start=1):
+    print('====> iter [{}]\ttoken ids shape: {}'.format(num, batch['token_ids'].shape))
+    print('====> iter [{}]\ttokens characters shape: {}'.format(num, batch['tokens_characters'].shape))
+    print('====> iter [{}]\tnext token ids shape: {}'.format(num, batch['next_token_id'].shape))
+
+'''
+UE for BidirectionalLMDataset
+'''
+print('\n\n\tUE for BidirectionalLMDataset:')
+
