@@ -1070,7 +1070,6 @@ def train_with_single_core(options, data, tf_save_dir, tf_log_dir,
             fout.write(json.dumps(options))
     graph = tf.Graph()
     with graph.as_default():
-        sv = tf.train.Supervisor(graph=graph, logdir=tf_log_dir)
         global_step = tf.get_variable(
             'global_step',
             [],
@@ -1078,7 +1077,7 @@ def train_with_single_core(options, data, tf_save_dir, tf_log_dir,
             trainable=False
         )
         lr = options.get('learning_rate', 0.2)
-        opt = tf.train.AdagradDAOptimizer(learning_rate=lr)
+        opt = tf.train.AdagradOptimizer(learning_rate=lr, initial_accumulator_value=1.0)
         tower_grads = []
         models = []
         train_perplexity = tf.get_variable(
@@ -1128,7 +1127,8 @@ def train_with_single_core(options, data, tf_save_dir, tf_log_dir,
         )
         init = tf.initialize_all_variables()
         bidirectional = options.get('bidirectional', False)
-        with sv.managed_session(master='', allow_soft_placement=True) as sess:
+        sv = tf.train.Supervisor(graph=graph, logdir=tf_log_dir)
+        with sv.managed_session(master='') as sess:
             sess.run(init)
             summary_writer = tf.summary.FileWriter(tf_log_dir, sess.graph)
             batch_size = options['batch_size']
@@ -1183,8 +1183,8 @@ def train_with_single_core(options, data, tf_save_dir, tf_log_dir,
             t1 = time.time()
             data_gen = data.iter_batches(batch_size, unroll_steps)
             for batch_no, batch in enumerate(data_gen, start=1):
-                if sv.should_stop():
-                    break
+                # if sv.should_stop():
+                #     break
                 try:
                     # slice the input in the batch for the feed_dict
                     X = batch
