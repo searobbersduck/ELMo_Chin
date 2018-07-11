@@ -276,10 +276,30 @@ def test_stat_max_length_in_words():
     infile = '../data/vocab_seg_words_elmo.txt'
     stat_max_length_in_words(infile)
 
+# 统计token总数目
+def stat_tokens_num(inpattern):
+    files = glob(inpattern)
+    total_cnt = 0
+    for file in files:
+        with open(file, 'r', encoding='utf-8') as f:
+            for line in f.readlines():
+                line = line.strip()
+                if line is None or len(line) == 0:
+                    continue
+                ss = line.split()
+                total_cnt += len(ss)
+    print('total tokens number is: {}'.format(total_cnt))
+
+def test_stat_tokens_num():
+    # total tokens number is: 4775300
+    inpattern = '../data/example/*_seg_words.txt'
+    stat_tokens_num(inpattern)
+
 if __name__ == '__main__':
     # test_outVocab()
     # test_gen_raw_txts()
     # test_get_vocab_from_dir()
     # test_gen_seg_files()
-    test_gen_vocab_for_elmo()
-    test_stat_max_length_in_words()
+    # test_gen_vocab_for_elmo()
+    # test_stat_max_length_in_words()
+    test_stat_tokens_num()
