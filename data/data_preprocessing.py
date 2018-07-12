@@ -5,6 +5,7 @@ import fire
 from glob import glob
 import operator
 import jieba
+import fire
 
 '''
 国标一二级字
@@ -302,4 +303,5 @@ if __name__ == '__main__':
     # test_gen_seg_files()
     # test_gen_vocab_for_elmo()
     # test_stat_max_length_in_words()
-    test_stat_tokens_num()
+    # test_stat_tokens_num()
+    fire.Fire()
