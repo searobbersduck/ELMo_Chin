@@ -5,3 +5,7 @@
     - [ ] 将*_raw.txt中的大段文本，生成小段文本*_origin.txt
     - [ ] 将*_origin.txt生成分词和分字的文本：*_seg_chars.txt, *_seg_words.txt
     - [ ] 生成字字典和词字典， vocab_raw.txt, vocab_seg_words.txt
+- [ ] 训练
+    - [ ] 训练：python train_elmo_try.py --save_dir ./log --vocab_file ../data/vocab_seg_words_elmo.txt --train_prefix '../data/example/*_seg_words.txt'
+    
+    
