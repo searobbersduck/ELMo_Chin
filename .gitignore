@@ -108,3 +108,6 @@ data/example
 !data/example/30?.txt
 *.txt
 try/log
+
+*.model
+*.vocab
