@@ -9,7 +9,7 @@ from glob import glob
 input_prefix = '../../data/example/*_origin.txt'
 outfile = './example.txt'
 
-def merge_files_to_one_file(input_prefix, outfile)
+def merge_files_to_one_file(input_prefix, outfile):
     file_list = glob(input_prefix)
     contents = []
     for file in file_list:
